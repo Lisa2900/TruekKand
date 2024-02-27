@@ -5,13 +5,13 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBUBG3QWuJFcJdsbPlsZsCctncBk7CkBkM",
-  authDomain: "crud-d04a8.firebaseapp.com",
-  projectId: "crud-d04a8",
-  storageBucket: "crud-d04a8.appspot.com",
-  messagingSenderId: "21299206860",
-  appId: "1:21299206860:web:612890fcd527fe27494069",
-  measurementId: "G-SVY9L6GWFZ"
+  apiKey: "AIzaSyDrmEAB2bkho7MdCoRHEmGZEx3Cgwfq1w0",
+  authDomain: "truekland-3e516.firebaseapp.com",
+  projectId: "truekland-3e516",
+  storageBucket: "truekland-3e516.appspot.com",
+  messagingSenderId: "611122136957",
+  appId: "1:611122136957:web:7c01ffedaf3f16bc93ee14",
+  measurementId: "G-FVPE4MBSZ5"
 };
 
 // Initialize Firebase
