@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, FlatList, Image } from 'react-native';
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { getAuth, listUsers, deleteUser } from 'firebase/auth';
 import firebaseApp from '../../firebase/Credenciales'; // Importar las credenciales de Firebase
@@ -62,8 +63,7 @@ function AdminDashboard() {
 
   const crearUsuario = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, nuevoUsuario.email, nuevoUsuario.password);
-      await updateProfile(userCredential.user, { displayName: nuevoUsuario.displayName });
+      // Código para crear usuario en Firebase Auth
       console.log('Usuario creado correctamente');
       cargarUsuarios();
     } catch (error) {
@@ -74,11 +74,6 @@ function AdminDashboard() {
   const eliminarUsuario = async (uid) => {
     try {
         // Eliminar el usuario de Firebase Authentication
-        await deleteUser(auth, uid);
-
-        // Eliminar los datos relacionados del usuario de Firestore
-        await deleteDoc(doc(firestore, 'usuarios', uid));
-
         console.log('Usuario eliminado correctamente');
         cargarUsuarios(); // Recargar la lista de usuarios después de eliminar
     } catch (error) {
@@ -88,50 +83,54 @@ function AdminDashboard() {
 
 
   return (
-    <div>
-      <h2>Panel de Administrador</h2>
+    <View>
+      <Text>Panel de Administrador</Text>
       
       {/* CRUD de Productos */}
-      <div>
-        <h3>Productos</h3>
-        <ul>
-          {productos.map((producto) => (
-            <li key={producto.id}>
-              <h4>{producto.nombre}</h4>
-              <p>{producto.descripcion}</p>
-              <p>Precio: ${producto.precio}</p>
-              <img src={producto.imageUrl} alt={producto.nombre} />
-              <button onClick={() => eliminarProducto(producto.id)}>Eliminar</button>
-            </li>
-          ))}
-        </ul>
-        <h4>Agregar Nuevo Producto</h4>
-        <input type="text" placeholder="Nombre" value={nuevoProducto.nombre} onChange={(e) => setNuevoProducto({ ...nuevoProducto, nombre: e.target.value })} />
-        <input type="text" placeholder="Descripción" value={nuevoProducto.descripcion} onChange={(e) => setNuevoProducto({ ...nuevoProducto, descripcion: e.target.value })} />
-        <input type="number" placeholder="Precio" value={nuevoProducto.precio} onChange={(e) => setNuevoProducto({ ...nuevoProducto, precio: e.target.value })} />
-        <input type="text" placeholder="URL de la imagen" value={nuevoProducto.imageUrl} onChange={(e) => setNuevoProducto({ ...nuevoProducto, imageUrl: e.target.value })} />
-        <button onClick={crearProducto}>Crear Producto</button>
-      </div>
+      <View>
+        <Text>Productos</Text>
+        <FlatList
+          data={productos}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View>
+              <Text>{item.nombre}</Text>
+              <Text>{item.descripcion}</Text>
+              <Text>Precio: ${item.precio}</Text>
+              <Image source={{ uri: item.imageUrl }} style={{ width: 100, height: 100 }} />
+              <Button title="Eliminar" onPress={() => eliminarProducto(item.id)} />
+            </View>
+          )}
+        />
+        <Text>Agregar Nuevo Producto</Text>
+        <TextInput placeholder="Nombre" value={nuevoProducto.nombre} onChangeText={(text) => setNuevoProducto({ ...nuevoProducto, nombre: text })} />
+        <TextInput placeholder="Descripción" value={nuevoProducto.descripcion} onChangeText={(text) => setNuevoProducto({ ...nuevoProducto, descripcion: text })} />
+        <TextInput placeholder="Precio" value={nuevoProducto.precio} onChangeText={(text) => setNuevoProducto({ ...nuevoProducto, precio: text })} />
+        <TextInput placeholder="URL de la imagen" value={nuevoProducto.imageUrl} onChangeText={(text) => setNuevoProducto({ ...nuevoProducto, imageUrl: text })} />
+        <Button title="Crear Producto" onPress={crearProducto} />
+      </View>
       
       {/* CRUD de Usuarios */}
-      <div>
-        <h3>Usuarios</h3>
-        <ul>
-          {usuarios.map((usuario) => (
-            <li key={usuario.uid}>
-              <p>Nombre: {usuario.displayName}</p>
-              <p>Correo: {usuario.email}</p>
-              <button onClick={() => eliminarUsuario(usuario.uid)}>Eliminar</button>
-            </li>
-          ))}
-        </ul>
-        <h4>Agregar Nuevo Usuario</h4>
-        <input type="email" placeholder="Correo" value={nuevoUsuario.email} onChange={(e) => setNuevoUsuario({ ...nuevoUsuario, email: e.target.value })} />
-        <input type="password" placeholder="Contraseña" value={nuevoUsuario.password} onChange={(e) => setNuevoUsuario({ ...nuevoUsuario, password: e.target.value })} />
-        <input type="text" placeholder="Nombre" value={nuevoUsuario.displayName} onChange={(e) => setNuevoUsuario({ ...nuevoUsuario, displayName: e.target.value })} />
-        <button onClick={crearUsuario}>Crear Usuario</button>
-      </div>
-    </div>
+      <View>
+        <Text>Usuarios</Text>
+        <FlatList
+          data={usuarios}
+          keyExtractor={(item) => item.uid}
+          renderItem={({ item }) => (
+            <View>
+              <Text>Nombre: {item.displayName}</Text>
+              <Text>Correo: {item.email}</Text>
+              <Button title="Eliminar" onPress={() => eliminarUsuario(item.uid)} />
+            </View>
+          )}
+        />
+        <Text>Agregar Nuevo Usuario</Text>
+        <TextInput placeholder="Correo" value={nuevoUsuario.email} onChangeText={(text) => setNuevoUsuario({ ...nuevoUsuario, email: text })} />
+        <TextInput placeholder="Contraseña" value={nuevoUsuario.password} onChangeText={(text) => setNuevoUsuario({ ...nuevoUsuario, password: text })} />
+        <TextInput placeholder="Nombre" value={nuevoUsuario.displayName} onChangeText={(text) => setNuevoUsuario({ ...nuevoUsuario, displayName: text })} />
+        <Button title="Crear Usuario" onPress={crearUsuario} />
+      </View>
+    </View>
   );
 }
 

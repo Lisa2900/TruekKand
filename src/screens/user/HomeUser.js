@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text, Image } from 'react-native';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import firebaseApp from '../../firebase/Credenciales'; // Importar las credenciales de Firebase
 
@@ -27,19 +28,19 @@ function HomeUser() {
   }, []);
 
   return (
-    <div>
-      <h2>Productos Disponibles</h2>
-      <div className="productos">
+    <View>
+      <Text>Productos Disponibles</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
         {productos.map((producto) => (
-          <div key={producto.id} className="producto">
-            <h3>{producto.nombre}</h3>
-            <p>{producto.descripcion}</p>
-            <p>Precio: ${producto.precio}</p>
-            <img src={producto.imageUrl} alt={producto.nombre} />
-          </div>
+          <View key={producto.id} style={{ width: '50%' }}>
+            <Text>{producto.nombre}</Text>
+            <Text>{producto.descripcion}</Text>
+            <Text>Precio: ${producto.precio}</Text>
+            <Image source={{ uri: producto.imageUrl }} style={{ width: 100, height: 100 }} />
+          </View>
         ))}
-      </div>
-    </div>
+      </View>
+    </View>
   );
 }
 

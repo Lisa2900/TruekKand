@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { storage } from 'firebase/storage';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { addDoc, collection } from 'firebase/firestore';
-import { getFirestore } from 'firebase/firestore';
+import { View, Text, TextInput, Button } from 'react-native';
+import { getStorage, ref, uploadFile, getDownloadURL } from 'firebase/storage';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import firebaseApp from '../../firebase/Credenciales'; // Importar las credenciales de Firebase
 
 function Publicar() {
     const firestore = getFirestore(firebaseApp); // Obtener la instancia de Firestore con las credenciales
     const auth = getAuth(firebaseApp); // Obtener la instancia de Auth con las credenciales
+    const storage = getStorage(firebaseApp); // Obtener la instancia de Storage con las credenciales
 
     const [nombreProducto, setNombreProducto] = useState('');
     const [descripcionProducto, setDescripcionProducto] = useState('');
@@ -16,9 +16,7 @@ function Publicar() {
     const [imagen, setImagen] = useState(null);
 
     const handleImagenChange = (e) => {
-        if (e.target.files[0]) {
-            setImagen(e.target.files[0]);
-        }
+        // Implementa la lógica para seleccionar una imagen de la galería o la cámara
     };
 
     const handlePublicarProducto = async () => {
@@ -34,9 +32,9 @@ function Publicar() {
                 return;
             }
 
-            const storageRef = ref(storage, `imagenes/${imagen.name}`, { authToken: user.accessToken });
-            await uploadBytes(storageRef, imagen);
-            const imageUrl = await getDownloadURL(storageRef, { authToken: user.accessToken });
+            const storageRef = ref(storage, `imagenes/${imagen.name}`);
+            await uploadFile(storageRef, imagen);
+            const imageUrl = await getDownloadURL(storageRef);
 
             const productosRef = collection(firestore, 'productos');
             await addDoc(productosRef, {
@@ -53,28 +51,27 @@ function Publicar() {
         }
     };
 
-
     return (
-        <div>
-            <h2>Publicar Producto</h2>
-            <div>
-                <label>Nombre del Producto:</label>
-                <input type="text" value={nombreProducto} onChange={(e) => setNombreProducto(e.target.value)} />
-            </div>
-            <div>
-                <label>Descripción del Producto:</label>
-                <input type="text" value={descripcionProducto} onChange={(e) => setDescripcionProducto(e.target.value)} />
-            </div>
-            <div>
-                <label>Precio del Producto:</label>
-                <input type="number" value={precioProducto} onChange={(e) => setPrecioProducto(e.target.value)} />
-            </div>
-            <div>
-                <label>Imagen del Producto:</label>
-                <input type="file" onChange={handleImagenChange} />
-            </div>
-            <button onClick={handlePublicarProducto}>Publicar Producto</button>
-        </div>
+        <View>
+            <Text>Publicar Producto</Text>
+            <View>
+                <Text>Nombre del Producto:</Text>
+                <TextInput value={nombreProducto} onChangeText={(text) => setNombreProducto(text)} />
+            </View>
+            <View>
+                <Text>Descripción del Producto:</Text>
+                <TextInput value={descripcionProducto} onChangeText={(text) => setDescripcionProducto(text)} />
+            </View>
+            <View>
+                <Text>Precio del Producto:</Text>
+                <TextInput value={precioProducto} onChangeText={(text) => setPrecioProducto(text)} />
+            </View>
+            <View>
+                <Text>Imagen del Producto:</Text>
+                {/* Implementa el componente para seleccionar una imagen */}
+            </View>
+            <Button title="Publicar Producto" onPress={handlePublicarProducto} />
+        </View>
     );
 }
 

@@ -1,34 +1,41 @@
-import React, { useState } from 'react';
-import firebaseApp from '../firebase/Credenciales';
+import React from 'react';
+import { View, Text, TextInput, Button } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { firebaseApp } from '../firebase/Credenciales'; // Asegúrate de importar correctamente tu configuración de Firebase
 
 const auth = getAuth(firebaseApp);
 
-function Login() {
-  function submitHandler(e) {
-    e.preventDefault();
-    const email = e.target.elements.email.value;
-    const password = e.target.elements.password.value;
+const Login = () => {
+  const submitHandler = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Inicio de sesión exitoso');
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error.message);
+    }
+  };
 
-    signInWithEmailAndPassword(auth, email, password);
-  }
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
   return (
-    <div>
-      <h1>Inicia Sesión</h1>
-      <form onSubmit={submitHandler}>
-        <label>
-          Correo Electrónico:
-          <input type='email' id='email' />
-        </label>
-        <label>
-          Contraseña:
-          <input type='password' id='password' />
-        </label>
-        <input type='submit' value="Iniciar Sesión" />
-      </form>
-    </div>
+    <View>
+      <Text>Inicia Sesión</Text>
+      <TextInput
+        onChangeText={setEmail}
+        value={email}
+        placeholder="Correo Electrónico"
+        keyboardType="email-address"
+      />
+      <TextInput
+        onChangeText={setPassword}
+        value={password}
+        placeholder="Contraseña"
+        secureTextEntry={true}
+      />
+      <Button title="Iniciar Sesión" onPress={submitHandler} />
+    </View>
   );
-}
+};
 
 export default Login;

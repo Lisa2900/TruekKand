@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, FlatList, Image } from 'react-native';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 import firebaseApp from '../../firebase/Credenciales'; // Importar las credenciales de Firebase
 
@@ -33,25 +34,26 @@ function Buscar() {
   }, [busqueda, firestore]);
 
   return (
-    <div>
-      <h2>Buscar Productos</h2>
-      <input
-        type="text"
+    <View>
+      <Text>Buscar Productos</Text>
+      <TextInput
         placeholder="Buscar por nombre"
         value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
+        onChangeText={(text) => setBusqueda(text)}
       />
-      <ul>
-        {resultados.map((producto) => (
-          <li key={producto.id}>
-            <h3>{producto.nombre}</h3>
-            <p>{producto.descripcion}</p>
-            <p>Precio: ${producto.precio}</p>
-            <img src={producto.imageUrl} alt={producto.nombre} />
-          </li>
-        ))}
-      </ul>
-    </div>
+      <FlatList
+        data={resultados}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item.nombre}</Text>
+            <Text>{item.descripcion}</Text>
+            <Text>Precio: ${item.precio}</Text>
+            <Image source={{ uri: item.imageUrl }} style={{ width: 100, height: 100 }} />
+          </View>
+        )}
+      />
+    </View>
   );
 }
 

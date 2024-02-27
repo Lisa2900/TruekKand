@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, Text, Button } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import firebaseApp from '../../firebase/Credenciales'; // Importar las credenciales de Firebase
 
@@ -14,10 +15,10 @@ function CerrarSesionAdmin() {
     };
 
     return (
-        <div>
-            <h2>Cerrar Sesión</h2>
-            <button onClick={handleCerrarSesion}>Cerrar Sesión</button>
-        </div>
+        <View>
+            <Text>Cerrar Sesión</Text>
+            <Button title="Cerrar Sesión" onPress={handleCerrarSesion} />
+        </View>
     );
 }
 

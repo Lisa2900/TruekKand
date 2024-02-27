@@ -1,11 +1,14 @@
 import React from 'react';
+import { View,Text } from 'react-native';
 
-function Home({user}) {
+const Home = () => {
   return (
-    <div>
-      <h1>Home invitado</h1>
-    </div>
-  )
+    <>
+      <View>
+        <Text> Home invitado</Text>
+      </View>
+    </>
+  );
 }
 
 export default Home
